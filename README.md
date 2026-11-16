@@ -1,23 +1,25 @@
-# Chizuru Quiz Adat
-
 <p align="center">
   <img src="promo/banner.png" alt="Chizuru Quiz Adat banner" width="100%">
 </p>
 
+# Chizuru Quiz Adat
 
-Kuis tebak daerah asal kostum Chizuru Mizuhara — 100 kostum adat Indonesia & dunia.
+> Chizuru Mizuhara fan-art game (100 world traditional costumes)
 
-## Cara Main
-- Diberi gambar kostum, pilih daerah asalnya dari 4 pilihan.
-- Skor & streak dicatat; rekor terbaik disimpan di browser (localStorage).
-- 100 soal diacak setiap sesi.
+## Tentang Chizuru Quiz Adat
 
-## Mainkan
-https://aisac-id.github.io/chizuru-quiz-adat/
+Chizuru Mizuhara fan-art game (100 world traditional costumes)
 
-## Teknis
-Static HTML + JS, tanpa server. Buka `index.html` langsung atau via GitHub Pages.
-Aset gambar fan-art di folder `assets/`.
+## Fitur yang Direncanakan
+
+- Gameplay langsung di browser
+- Level dan tantangan bertingkat
+- Skor dan papan peringkat
+- Hadiah dan koleksi
+
+## Teknologi
+
+`HTML`
 
 
 ---
