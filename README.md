@@ -18,6 +18,8 @@ https://aisac-id.github.io/chizuru-quiz-adat/
 ## Teknis
 Static HTML + JS, tanpa server. Buka `index.html` langsung atau via GitHub Pages.
 Aset gambar fan-art di folder `assets/`.
+
+
 ---
 
 ## Brand & Promotion Kit
