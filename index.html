@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>Chizuru Quiz — Tebak Adat Dunia</title>
+<style>
+:root{--bg:#1a1226;--card:#2a1f3d;--accent:#ff5c8a;--gold:#ffc857;--text:#fff}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{font-family:system-ui,-apple-system,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column;align-items:center}
+.wrap{width:100%;max-width:520px;padding:16px;display:flex;flex-direction:column;gap:12px}
+header{text-align:center;padding:8px 0}
+h1{font-size:1.3rem;color:var(--accent)}
+.sub{font-size:.8rem;opacity:.7}
+.bar{height:8px;background:#3a2f52;border-radius:99px;overflow:hidden}
+.bar>i{display:block;height:100%;background:linear-gradient(90deg,var(--accent),var(--gold));width:0%;transition:width .3s}
+.stats{display:flex;justify-content:space-between;font-size:.85rem}
+.stats b{color:var(--gold)}
+.imgbox{border-radius:16px;overflow:hidden;aspect-ratio:2/3;max-height:52vh;background:#000;box-shadow:0 8px 30px rgba(0,0,0,.5)}
+.imgbox img{width:100%;height:100%;object-fit:cover;object-position:top}
+.q{font-size:.95rem;text-align:center;opacity:.9}
+.opts{display:grid;gap:8px}
+.opts button{padding:12px;border-radius:12px;border:2px solid #4a3f66;background:var(--card);color:var(--text);font-size:.9rem;text-align:left;cursor:pointer;transition:.15s}
+.opts button:active{transform:scale(.98)}
+.opts button.ok{border-color:#4ade80;background:#14351f}
+.opts button.no{border-color:#f87171;background:#3a1520}
+.opts button:disabled{cursor:default}
+.next{padding:14px;border-radius:12px;border:none;background:var(--accent);color:#fff;font-size:1rem;font-weight:700;cursor:pointer}
+.screen{display:none;flex-direction:column;gap:12px}
+.screen.on{display:flex}
+.big{ text-align:center;padding:30px 10px}
+.big h2{font-size:1.6rem;color:var(--gold);margin-bottom:8px}
+.big p{opacity:.85;margin-bottom:6px}
+.badge{display:inline-block;padding:4px 10px;border-radius:99px;background:var(--card);font-size:.8rem;margin:4px}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header><h1>Chizuru Quiz: Tebak Adat Dunia</h1><div class="sub">100 kostum adat & olahraga — tebak asal budayanya!</div></header>
+
+<div class="screen on" id="scr-start"><div class="big">
+<h2>Siap jalan-jalan?</h2>
+<p>Chizuru memakai 100 kostum dari seluruh dunia.</p>
+<p>Tebak asal daerah/budaya tiap kostum. Skor & streak-mu dicatat!</p>
+<p><span class="badge" id="best">Rekor: 0</span></p>
+<button class="next" onclick="start()">Mulai Quiz</button>
+</div></div>
+
+<div class="screen" id="scr-quiz">
+<div class="stats"><span>Soal <b id="qno">1</b>/100</span><span>Skor <b id="score">0</b></span><span>Streak <b id="streak">0</b></span></div>
+<div class="bar"><i id="prog"></i></div>
+<div class="imgbox"><img id="qimg" alt="kostum"></div>
+<div class="q" id="qtext">Dari mana kostum ini?</div>
+<div class="opts" id="opts"></div>
+<button class="next" id="btn-next" style="display:none" onclick="next()">Lanjut →</button>
+</div>
+
+<div class="screen" id="scr-end"><div class="big">
+<h2 id="end-title">Selesai!</h2>
+<p id="end-score"></p>
+<p id="end-msg"></p>
+<button class="next" onclick="start()">Main Lagi</button>
+</div></div>
+</div>
+<script src="data.js"></script>
+<script>
+let order=[],idx=0,score=0,streak=0,best=+(localStorage.getItem('cq_best')||0);
+document.getElementById('best').textContent='Rekor: '+best;
+const $=id=>document.getElementById(id);
+function show(s){document.querySelectorAll('.screen').forEach(e=>e.classList.remove('on'));$(s).classList.add('on')}
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+function start(){order=shuffle([...COSTUMES]);idx=0;score=0;streak=0;show('scr-quiz');render()}
+function render(){
+ const c=order[idx];
+ $('qno').textContent=idx+1;$('score').textContent=score;$('streak').textContent=streak;
+ $('prog').style.width=(idx/100*100)+'%';
+ $('qimg').src='assets/'+c.file;
+ $('qtext').textContent='Kostum #'+String(c.id).padStart(3,'0')+' — dari mana asalnya?';
+ const others=shuffle(COSTUMES.filter(x=>x.region!==c.region)).slice(0,3).map(x=>x.region);
+ const opts=shuffle([c.region,...others]);
+ const box=$('opts');box.innerHTML='';
+ $('btn-next').style.display='none';
+ opts.forEach(r=>{
+  const b=document.createElement('button');b.textContent=r;
+  b.onclick=()=>{
+   box.querySelectorAll('button').forEach(x=>x.disabled=true);
+   if(r===c.region){b.classList.add('ok');score++;streak++;}
+   else{b.classList.add('no');streak=0;box.querySelectorAll('button').forEach(x=>{if(x.textContent===c.region)x.classList.add('ok')});}
+   $('score').textContent=score;$('streak').textContent=streak;
+   $('qtext').textContent=(r===c.region?'Benar! ':'Kurang tepat! ')+'Ini '+c.name+' ('+c.region+'). Pose: '+c.pose+'.';
+   $('btn-next').style.display='block';
+  };
+  box.appendChild(b);
+ });
+}
+function next(){idx++;if(idx>=100){end();return}render()}
+function end(){
+ best=Math.max(best,score);localStorage.setItem('cq_best',best);
+ $('end-score').textContent='Skor akhir: '+score+' / 100';
+ $('end-msg').textContent=score>=90?'Luar biasa! Kamu ahli adat dunia!':score>=70?'Keren! Pengetahuan budayamu mantap.':score>=40?'Lumayan! Ajak Chizuru jalan-jalan lagi ya.':'Jangan menyerah — main lagi dan hafalkan adatnya!';
+ $('end-title').textContent=score>=70?'Selamat!':'Selesai!';
+ show('scr-end');
+}
+</script>
+</body>
+</html>
