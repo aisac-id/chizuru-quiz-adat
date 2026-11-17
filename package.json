@@ -1,0 +1,16 @@
+{
+  "name": "chizuru-quiz-adat",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Unofficial fan-made quiz game: 100 world traditional costumes. Static HTML, no runtime dependencies.",
+  "scripts": {
+    "serve": "node scripts/serve.mjs",
+    "lint": "node scripts/lint.mjs",
+    "check:hardcode": "node scripts/check-hardcode.mjs",
+    "test": "playwright test"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.65.1"
+  }
+}
