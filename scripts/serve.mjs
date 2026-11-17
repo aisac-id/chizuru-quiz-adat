@@ -7,6 +7,12 @@ import { fileURLToPath } from 'node:url';
 const root = resolve(fileURLToPath(new URL('..', import.meta.url)));
 const host = process.env.HOST || '127.0.0.1';
 const port = Number(process.env.PORT || 8123);
+if (!Number.isInteger(port) || port < 1 || port > 65535) {
+  console.error('Invalid PORT env value; expected an integer 1-65535');
+  process.exit(1);
+}
+const ALLOWED_HOSTS = new Set([`${host}:${port}`, `localhost:${port}`, host, 'localhost']);
+const BLOCKED_DIRS = new Set(['Operation', 'node_modules', 'test-results', 'playwright-report']);
 
 const MIME = {
   '.html': 'text/html; charset=utf-8',
@@ -26,7 +32,26 @@ const MIME = {
 };
 
 createServer(async (req, res) => {
-  const pathname = decodeURIComponent(new URL(req.url, `http://${host}:${port}`).pathname);
+  let pathname;
+  try {
+    pathname = decodeURIComponent(new URL(req.url, `http://${host}:${port}`).pathname);
+  } catch {
+    res.writeHead(400);
+    res.end('Bad request');
+    return;
+  }
+  const requestHost = (req.headers.host || '').toLowerCase();
+  if (!ALLOWED_HOSTS.has(requestHost)) {
+    res.writeHead(403);
+    res.end('Forbidden host');
+    return;
+  }
+  const segments = pathname.split('/').filter(Boolean);
+  if (segments.some((s) => s.startsWith('.') || BLOCKED_DIRS.has(s))) {
+    res.writeHead(403);
+    res.end('Forbidden');
+    return;
+  }
   const target = normalize(join(root, pathname.endsWith('/') ? join(pathname, 'index.html') : pathname));
   if (target !== root && !target.startsWith(root + sep)) {
     res.writeHead(403);
