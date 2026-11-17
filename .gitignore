@@ -1,0 +1,25 @@
+# Secrets / local config (only .env.example may be committed)
+.env
+.env.*
+!.env.example
+
+# Internal confidential material — NEVER commit (P0 security)
+Operation/
+
+# Dependencies & generated test output
+node_modules/
+test-results/
+playwright-report/
+blob-report/
+.playwright/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+desktop.ini
+*.swp
+.idea/
+.vscode/
+
+# Local tooling logs
+*.log
