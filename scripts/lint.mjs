@@ -11,7 +11,9 @@ const FORBIDDEN = [
   { re: /\beval\s*\(/, why: 'eval is forbidden' },
   { re: /new\s+Function\s*\(/, why: 'new Function is forbidden' },
   { re: /document\.write\s*\(/, why: 'document.write is forbidden' },
-  { re: /\.innerHTML\s*=\s*(?!['"]\s*['"])/, why: 'innerHTML with dynamic content is forbidden; use textContent' },
+  { re: /\.innerHTML\s*\+?=\s*(?!['"]\s*['"])/, why: 'dynamic innerHTML forbidden; use textContent' },
+  { re: /\.outerHTML\s*\+?=/, why: 'outerHTML assignment forbidden; use textContent' },
+  { re: /\.insertAdjacentHTML\s*\(/, why: 'insertAdjacentHTML forbidden; use textContent' },
 ];
 
 function resolveRoot() {
@@ -38,7 +40,7 @@ const findings = [];
 for await (const file of walk(root)) {
   const rel = relative(root, file).split(sep).join('/');
   const text = await readFile(file, 'utf8');
-  const lines = text.split('\n');
+  const lines = text.replace(/\n$/, '').split('\n');
   if (lines.length > MAX_LOC) findings.push(`${rel}: ${lines.length} lines (limit ${MAX_LOC})`);
   lines.forEach((line, i) => {
     for (const { re, why } of FORBIDDEN) {
