@@ -15,7 +15,7 @@ Standar kerja WAJIB untuk semua perubahan di repo ini. Dibaca sebelum menulis ko
 
 Diadopsi dari loop-v5: #11 audit sebelum deploy (security, performa, a11y, review), #14 kode/komentar/identifier 100% English (teks UI boleh Indonesia), #15 supply-chain (versi exact tanpa `^`/`~`, lockfile di-commit, CI `npm ci`, audit 0 high/critical untuk dependensi runtime), #16 config via environment + nol secret hardcoded, #19 test-first untuk logika baru (setiap bug fix punya test regresi yang merah sebelum fix), #23 git + Conventional Commits.
 
-Diadopsi dari harness-extension: maks **300 LoC per file** (kode sumber; lockfile/aset generated dikecualikan), vanilla ES modules, tanpa CDN/eval/polling liar, `.env.example` + `.gitignore`, checklist acceptance (§6).
+Diadopsi dari harness-extension: maks **300 LoC per file** (dihitung sebagai baris fisik termasuk kosong/komentar; lockfile/aset generated dikecualikan), vanilla ES modules, tanpa CDN/eval/polling liar, `.env.example` + `.gitignore`, checklist acceptance (§6).
 
 Pengecualian (dengan alasan, disetujui Project Lead):
 - Aturan DB/backend loop-v5 (#2 FK, #3 soft delete, #4 CRUD satu halaman, #5 drawer, #7 data dari API, #8 akses DB, #9 backend dulu): **tidak berlaku** — game statis tanpa database; data kuis adalah konten produk, bukan dummy data.
@@ -23,7 +23,7 @@ Pengecualian (dengan alasan, disetujui Project Lead):
 - #14 i18n 3 bahasa (id/en/ja): **ditangguhkan** — UI default `id`; `en` wajib untuk teks legal/disclaimer. `ja` di luar scope mini-game edukasi audiens Indonesia.
 - #12 UX Heuristic Benchmark 3 framework: **disederhanakan** menjadi gate WCAG 2.2 AA + aturan UX inti (touch target ≥44×44px, fokus terlihat, feedback instan, navigasi ≤3 layar). Scorecard penuh hanya bila UI dirombak total.
 - #17 SRE (health endpoint, backup drill): **tidak berlaku** untuk hosting statis; git = sumber kebenaran, uptime mengikuti GitHub Pages.
-- #18 UU PDP: aplikasi tidak memproses data pribadi (hanya skor lokal `localStorage`, tanpa identtas). Tetap wajib: tanpa tracker/pihak ketiga, tanpa pengumpulan data.
+- #18 UU PDP: aplikasi tidak memproses data pribadi (hanya skor lokal `localStorage`, tanpa identitas). Tetap wajib: tanpa tracker/pihak ketiga, tanpa pengumpulan data.
 - #24 `progress.md`: digantikan backlog GitHub Issues + PR (satu sumber kebenaran, hemat duplikasi).
 
 ## 3. Struktur folder & batas ukuran
