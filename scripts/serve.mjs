@@ -5,6 +5,7 @@ import { extname, join, normalize, resolve, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const root = resolve(fileURLToPath(new URL('..', import.meta.url)));
+const host = process.env.HOST || '127.0.0.1';
 const port = Number(process.env.PORT || 8123);
 
 const MIME = {
@@ -25,7 +26,7 @@ const MIME = {
 };
 
 createServer(async (req, res) => {
-  const pathname = decodeURIComponent(new URL(req.url, 'http://localhost').pathname);
+  const pathname = decodeURIComponent(new URL(req.url, `http://${host}:${port}`).pathname);
   const target = normalize(join(root, pathname.endsWith('/') ? join(pathname, 'index.html') : pathname));
   if (target !== root && !target.startsWith(root + sep)) {
     res.writeHead(403);
@@ -40,6 +41,6 @@ createServer(async (req, res) => {
     res.writeHead(404);
     res.end('Not found');
   }
-}).listen(port, '127.0.0.1', () => {
-  console.log(`Serving ${root} at http://127.0.0.1:${port}`);
+}).listen(port, host, () => {
+  console.log(`Serving ${root} at http://${host}:${port}`);
 });

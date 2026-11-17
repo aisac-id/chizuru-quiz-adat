@@ -13,6 +13,7 @@ test('quiz flow: answer one question, then advance', async ({ page }) => {
   const options = page.locator('#opts button');
   await expect(options).toHaveCount(4);
   await expect(page.locator('#qimg')).toHaveAttribute('src', /assets\/.+\.jpg/);
+  await expect.poll(() => page.locator('#qimg').evaluate((img) => img.naturalWidth)).toBeGreaterThan(0);
   await options.first().click();
   await expect(page.locator('#qtext')).toContainText(/Benar!|Kurang tepat!/);
   await expect(page.locator('#btn-next')).toBeVisible();
@@ -28,4 +29,23 @@ test('no page errors while playing one question', async ({ page }) => {
   await page.locator('#opts button').first().click();
   await page.locator('#btn-next').click();
   expect(errors).toEqual([]);
+});
+
+test('full session: last question transitions to end screen with score and record', async ({ page }) => {
+  test.setTimeout(120_000);
+  await page.goto('/');
+  await page.getByRole('button', { name: 'Mulai Quiz' }).click();
+  const statsText = await page.locator('.stats').innerText();
+  const total = Number(statsText.match(/\/\s*(\d+)/)[1]);
+  expect(total).toBeGreaterThan(0);
+  for (let i = 0; i < total; i++) {
+    await expect(page.locator('#qno')).toHaveText(String(i + 1));
+    await page.locator('#opts button').first().click();
+    await page.locator('#btn-next').click();
+  }
+  await expect(page.locator('#scr-end')).toBeVisible();
+  await expect(page.locator('#end-score')).toContainText(/Skor akhir: \d+ \/ \d+/);
+  const best = await page.evaluate(() => localStorage.getItem('cq_best'));
+  expect(Number.isFinite(Number(best))).toBe(true);
+  expect(Number(best)).toBeGreaterThanOrEqual(0);
 });

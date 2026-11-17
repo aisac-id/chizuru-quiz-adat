@@ -48,7 +48,8 @@ Tidak ada secret runtime. Variabel env tooling (lihat `.env.example`, nilai pals
 | Variabel | Fungsi | Contoh |
 |---|---|---|
 | `PORT` | Port server statis lokal untuk test | `8123` |
-| `BASE_URL` | Base URL test e2e | `http://127.0.0.1:8123` |
+| `HOST` | Host server statis lokal; dasar URL test | `127.0.0.1` |
+| `BASE_URL` | Base URL test e2e (default: gabungan HOST+PORT) | `http://127.0.0.1:8123` |
 
 `.env` lokal masuk `.gitignore`; hanya `.env.example` yang di-commit. Infrastruktur AISAC (bila kelak dipakai) hanya lewat `C:\Users\Acer\.aisac\vercel-ai.cmd`; secret produksi di Vercel env, tidak pernah di repo.
 
